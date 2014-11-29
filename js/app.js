@@ -1,15 +1,16 @@
 "use strict";
 
 var tiles = []; //declares and set initial variables
-var wrong = 0;
-var matches = 0;
-var remaining = 8;
+var wrong;
+var matches;
+var remaining; 
 var timer;
 var prevImg;
 var processing;
 
 function setUpGame() {
     clearInterval(timer);
+    tiles = [];
     wrong = 0; //resets or sets variables to their inital value (used in game restart)
     matches = 0;
     remaining = 8;
@@ -32,6 +33,7 @@ function setUpGame() {
         tilePairs.push(tile); //add tiles to array
         tilePairs.push(_.clone(tile));
     });
+
     tilePairs = _.shuffle(tilePairs);
     var gameBoard = $('#game-board'); //+ sets up gameboard, rows, to each other/image
     gameBoard.empty();
@@ -135,6 +137,7 @@ function flipTile(tile, img) { //flips tile
     });
 }
 
-function restartGame() {
-    return confirm('Restart the game?');
+function restartGame() { //Congrats user, resets tile status, asks for restart
+    tile.flipped = !tile.flipped;
+    return confirm('Congratulations! Do you want to restart the game?');
 }
