@@ -1,40 +1,39 @@
 "use strict";
 
-var tiles = [];
-var matches;
-var wrong;
+var tiles = []; //declares and set initial variables
+var wrong = 0;
+var matches = 0;
+var remaining = 8;
 var timer;
-var previousImg;
-var remaining;
+var prevImg;
 var processing;
 
 function setUpGame() {
-    matches = 0;
-    wrong = 0;
     clearInterval(timer);
-    previousImg = null;
+    wrong = 0; //resets or sets variables to their inital value (used in game restart)
+    matches = 0;
     remaining = 8;
+    prevImg = null;
     processing = false;
     displayStats();
 
     for (var i = 1; i <= 32; i++) {
-        tiles.push({
+        tiles.push({ //initializes and set tiles via num.
             tileNum: i,
             src: 'img/tile' + i + '.jpg',
             flipped: false,
             matched: false
         });
-    } //for each tile
+    }
     tiles = _.shuffle(tiles);
     var selectedTiles = tiles.slice(0,8);
-    var tilePairs = [];
+    var tilePairs = []; //tile array
     _.forEach(selectedTiles, function(tile) {
-        tilePairs.push(tile);
+        tilePairs.push(tile); //add tiles to array
         tilePairs.push(_.clone(tile));
     });
     tilePairs = _.shuffle(tilePairs);
-
-    var gameBoard = $('#game-board');
+    var gameBoard = $('#game-board'); //+ sets up gameboard, rows, to each other/image
     gameBoard.empty();
     var row = $(document.createElement('div'));
     var img;
@@ -48,15 +47,13 @@ function setUpGame() {
             src: 'img/tile-back.png',
             alt: 'tile ' + tile.tileNum
         });
-
         img.data('tile', tile);
         row.append(img);
     });
     gameBoard.append(row);
 }
 
-function startTimer() {
-    //get starting milliseconds
+function startTimer() { //function to start timer, convert to seconds, and incrementally increase
     var startTime = Date.now();
     timer = window.setInterval(function() {
         var elapsedSeconds = (Date.now() - startTime) / 1000;
@@ -67,46 +64,45 @@ function startTimer() {
 
 $(document).ready(function() {
 
-    $('#start-game').click(function() {
+    $('#start-game').click(function() { //function to start game and timer
         setUpGame();
         startTimer();
 
-        $('#game-board img').click(function() {
+        $('#game-board img').click(function() { //used for and not for changing/flipping img
             var clickedImg = $(this);
             var tile = clickedImg.data('tile');
             if (tile.flipped || processing) {
                 return;
-            } else if (!previousImg) {
+            } else if (!prevImg) {
                 flipTile(tile, clickedImg);
-                previousImg = clickedImg;
+                prevImg = clickedImg;
             } else {
                 flipTile(tile, clickedImg);
                 compareTiles(clickedImg);
             }
         });
-    }); //start game button click
-}); //document ready function
+    });
+}); 
 
-function compareTiles(clickedImg) {
-    var prevTile = previousImg.data('tile');
-    var curTile = clickedImg.data('tile');
+function compareTiles(clickedImg) { //compares clicked tiles to previous image if previously clicked
+    var prevTile = prevImg.data('tile'); //loads tile into prev. var.
+    var currentTile = clickedImg.data('tile'); //loads 2nd tile into current tile.
     processing = true;
-    if (prevTile.tileNum != curTile.tileNum) {
+    if (prevTile.tileNum != currentTile.tileNum) { //if both tiles are different, flip again and reset
         window.setTimeout(function() {
-            flipTile(prevTile, previousImg);
-            flipTile(curTile, clickedImg);
-            previousImg = null;
+            flipTile(prevTile, prevImg);
+            flipTile(currentTile, clickedImg);
+            prevImg = null;
             processing = false;
         }, 1000);
-        wrong++;
+        wrong++; //increase total wrong guesses by 1
     } else {
-        curTile.matched = true;
+        currentTile.matched = true; //if both tiles are same, +1 matches, -1 remaining.
         prevTile.matched = true;
         matches++;
         remaining--;
         window.setTimeout(function() {
-            if (matches == 8) {
-                //prompt user for restart
+            if (matches == 8) { //once all 8 pairs are found, ask to restart game
                 clearInterval(timer);
                 if (restartGame()) {
                     setUpGame();
@@ -114,24 +110,19 @@ function compareTiles(clickedImg) {
                 }
             }
         }, 250);
-
-        previousImg = null;
+        prevImg = null;
         processing = false;
     }
     displayStats();
 }
 
-function restartGame() {
-    return confirm('Would you like to restart the game?');
-}
-
-function displayStats() {
+function displayStats() { //shows pairs found, incorrect guesses, and remaining pairs
     $('#matches').text(matches);
     $('#remaining').text(remaining);
     $('#wrong').text(wrong);
 }
 
-function flipTile(tile, img) {
+function flipTile(tile, img) { //flips tile
     img.fadeOut(100, function() {
         if (tile.flipped) {
             img.attr('src', 'img/tile-back.png');
@@ -142,4 +133,8 @@ function flipTile(tile, img) {
         tile.flipped = !tile.flipped;
         img.fadeIn(100);
     });
+}
+
+function restartGame() {
+    return confirm('Restart the game?');
 }

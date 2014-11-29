@@ -18,6 +18,7 @@ p {
 	font-weight: 200;
 	display: inline;
 	margin-left: 50px;
+	text-align: center;
 }
 
 #start-game {
@@ -35,12 +36,13 @@ p {
 	margin-right: auto;
 	display: block;
 	float: left;
+	background-color: black;
 	border: 5px black;
 }
 
 #game-board img {
-	height: 20%;
-	width: 20%;
+	height: 25%;
+	width: 25%;
 	padding: 5px;
 	box-sizing: border-box;
 }
