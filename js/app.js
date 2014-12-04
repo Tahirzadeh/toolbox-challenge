@@ -1,6 +1,6 @@
 "use strict";
 
-var tiles = []; //declares and set initial variables
+var tiles; //declares and set initial variables
 var wrong;
 var matches;
 var remaining; 
@@ -75,10 +75,12 @@ $(document).ready(function() {
             var tile = clickedImg.data('tile');
             if (tile.flipped || processing) {
                 return;
-            } else if (!prevImg) {
+            }
+            else if (!prevImg) {
                 flipTile(tile, clickedImg);
                 prevImg = clickedImg;
-            } else {
+            }
+            else {
                 flipTile(tile, clickedImg);
                 compareTiles(clickedImg);
             }
@@ -98,7 +100,8 @@ function compareTiles(clickedImg) { //compares clicked tiles to previous image i
             processing = false;
         }, 1000);
         wrong++; //increase total wrong guesses by 1
-    } else {
+    }
+    else {
         currentTile.matched = true; //if both tiles are same, +1 matches, -1 remaining.
         prevTile.matched = true;
         matches++;
@@ -109,6 +112,21 @@ function compareTiles(clickedImg) { //compares clicked tiles to previous image i
                 if (restartGame()) {
                     setUpGame();
                     startTimer();
+                    $('#game-board img').click(function() {
+                        var clickedImg = $(this);
+                        var tile = clickedImg.data('tile');
+                        if (tile.flipped || processing) {
+                            return;
+                        }
+                        else if (!prevImg) {
+                            flipTile(tile, clickedImg);
+                            prevImg = clickedImg;
+                        }
+                        else {
+                            flipTile(tile, clickedImg);
+                            compareTiles(clickedImg);
+                        }
+                    });
                 }
             }
         }, 250);
