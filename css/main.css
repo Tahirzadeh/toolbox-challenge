@@ -36,13 +36,13 @@ p {
 	margin-right: auto;
 	display: block;
 	float: left;
-	background-color: black;
 	border: 5px black;
 }
 
 #game-board img {
-	height: 25%;
-	width: 25%;
+	height: 15%;
+	width: 15%;
 	padding: 5px;
 	box-sizing: border-box;
+	background-color: black;
 }

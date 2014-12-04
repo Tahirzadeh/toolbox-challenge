@@ -138,6 +138,5 @@ function flipTile(tile, img) { //flips tile
 }
 
 function restartGame() { //Congrats user, resets tile status, asks for restart
-    tile.flipped = !tile.flipped;
     return confirm('Congratulations! Do you want to restart the game?');
 }
